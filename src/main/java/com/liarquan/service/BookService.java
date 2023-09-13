@@ -29,4 +29,14 @@ public class BookService {
         List<Book> books = bookMapper.getUnBorrowedBooksById(id);
         return ResponseResult.okResult(books);
     }
+
+    public ResponseResult<?> addBook(Book book) {
+        bookMapper.addBook(book);
+        return ResponseResult.okResult(null);
+    }
+
+    public ResponseResult<?> deleteBook(Integer bookId) {
+        bookMapper.deleteBook(bookId);
+        return ResponseResult.okResult(null);
+    }
 }

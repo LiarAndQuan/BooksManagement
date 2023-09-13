@@ -25,4 +25,9 @@ public class UserService {
         }
         return ResponseResult.okResult(userDetail);
     }
+
+    public ResponseResult<?> editMessage(User user) {
+        userMapper.editMessage(user);
+        return ResponseResult.okResult(null);
+    }
 }
