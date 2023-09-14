@@ -2,6 +2,7 @@ package com.liarquan.service;
 
 
 import com.liarquan.ResponseResult;
+import com.liarquan.mapper.BookMapper;
 import com.liarquan.mapper.RecordMapper;
 import com.liarquan.vo.RecordVo;
 import org.springframework.stereotype.Service;
@@ -16,16 +17,21 @@ public class RecordService {
     @Resource
     RecordMapper recordMapper;
 
+    @Resource
+    BookMapper bookMapper;
+
 
     public ResponseResult<?> borrowBook(Integer bookId, Integer userId) {
         LocalDateTime localDateTime = LocalDateTime.now();
         recordMapper.borrowBook(bookId, userId, localDateTime);
+        bookMapper.decreaseInventory(bookId);
         return ResponseResult.okResult(null);
     }
 
     public ResponseResult<?> returnBook(Integer bookId, Integer readerId) {
         LocalDateTime localDateTime = LocalDateTime.now();
         recordMapper.returnBook(bookId, readerId, localDateTime);
+        bookMapper.increaseInventory(bookId);
         return ResponseResult.okResult(null);
     }
 

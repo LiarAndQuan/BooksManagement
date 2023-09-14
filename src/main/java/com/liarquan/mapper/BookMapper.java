@@ -2,10 +2,7 @@ package com.liarquan.mapper;
 
 
 import com.liarquan.entity.Book;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -13,7 +10,7 @@ import java.util.List;
 public interface BookMapper {
 
     @Select("""
-            select * from book
+            select * from book where inventory>0;
             """)
     List<Book> getAllBooks();
 
@@ -21,13 +18,14 @@ public interface BookMapper {
             select * from book where id in (select book_id
                                             from record
                                             where reader_id = #{id} and return_time is null)
-                                                    """)
+            """)
     List<Book> getBorrowedBooksById(Integer id);
 
     @Select("""
                 select * from book where id not in (select book_id
                                                 from record
-                                                where reader_id = #{id})
+                                                where reader_id = #{id} and return_time is null)
+                                                and inventory>0
             """)
     List<Book> getUnBorrowedBooksById(Integer id);
 
@@ -40,4 +38,15 @@ public interface BookMapper {
             delete from book where id = #{bookId}
             """)
     void deleteBook(Integer bookId);
+
+    @Update("""
+            update book set inventory = inventory+1 where id=#{bookId}
+            """)
+    void increaseInventory(Integer bookId);
+
+    @Update("""
+            update book set inventory=inventory-1 where  id = #{bookId}
+            """)
+    void decreaseInventory(Integer bookId);
+
 }
